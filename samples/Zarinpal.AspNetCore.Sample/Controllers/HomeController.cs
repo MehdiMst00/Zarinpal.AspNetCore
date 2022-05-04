@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-using Zarinpal.AspNetCore.Sample.Models;
+using Zarinpal.AspNetCore.DTOs;
+using Zarinpal.AspNetCore.Interfaces;
 
 namespace Zarinpal.AspNetCore.Sample.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IZarinpalService _zarinpalService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IZarinpalService zarinpalService)
         {
-            _logger = logger;
+            _zarinpalService = zarinpalService;
         }
 
         public IActionResult Index()
@@ -18,15 +18,18 @@ namespace Zarinpal.AspNetCore.Sample.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> RequestPayment()
         {
-            return View();
-        }
+            var request = new ZarinpalRequestDTO(5000, "خرید",
+                "https://localhost:7219/Home/VerifyPayment",
+                "test@test.com", "09123456789");
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var result = await _zarinpalService.RequestAsync(request);
+            if (result.IsSuccessStatusCode)
+                return Redirect(result.RedirectUrl);
+
+            return RedirectToAction("Index");
         }
     }
 }

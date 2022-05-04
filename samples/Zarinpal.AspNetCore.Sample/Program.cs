@@ -1,18 +1,27 @@
+using Zarinpal.AspNetCore.Extensions;
+using Zarinpal.AspNetCore.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// Bind From 'appsettings.json'
+builder.Services.AddZarinpal(options =>
+{
+    builder.Configuration.GetSection("Zarinpal").Bind(options);
+});
+
+// Or bind it like this
+/* builder.Services.AddZarinpal(options =>
+{
+    options.MerchantId = "xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx";
+    options.ZarinpalMode = ZarinpalMode.Original;
+}); */
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

@@ -6,3 +6,16 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+<div class="container" style="direction: rtl">
+    <div class="row">
+        <div class="col-md-12">
+            <form asp-area="" asp-controller="Home" asp-action="RequestPayment"
+                  asp-antiforgery="true" method="post">
+                <div class="d-grid">
+                    <button class="btn btn-success" type="submit">انتقال به درگاه پرداخت</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
