@@ -1,0 +1,19 @@
+﻿@model bool
+@{
+    ViewData["Title"] = "VerifyPayment";
+}
+
+<div class="container">
+    @if (Model)
+    {
+        <div class="alert alert-success">
+            عملیات با موفقیت انجام شد
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">
+            عملیات با خطا مواجه شد
+        </div>
+    }
+</div>

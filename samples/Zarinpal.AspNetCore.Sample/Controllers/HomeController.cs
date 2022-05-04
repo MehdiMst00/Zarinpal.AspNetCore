@@ -31,5 +31,11 @@ namespace Zarinpal.AspNetCore.Sample.Controllers
 
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> VerifyPayment()
+        {
+            return View(false);
+        }
     }
 }
