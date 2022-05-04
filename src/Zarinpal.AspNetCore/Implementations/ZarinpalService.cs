@@ -76,6 +76,39 @@ public class ZarinpalService : IZarinpalService
         }
     }
 
+    public async Task<ZarinpalVerifyResultDTO> VerifyAsync(ZarinpalVerifyDTO verify)
+    {
+        try
+        {
+            if (!string.IsNullOrEmpty(verify.Authority) && verify.Amount > 0)
+            {
+                VerifyDTO verifyDto = new()
+                {
+                    Amount = verify.Amount,
+                    Authority = verify.Authority,
+                    MerchantId = _zarinpalOptions.MerchantId
+                };
+
+                var response = await _httpClient.PostAsJsonAsync("v4/payment/verify.json", verifyDto);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var verificationResponse =
+                        await JsonSerializer.DeserializeAsync<VerifyResult>
+                            (await response.Content.ReadAsStreamAsync());
+                    if (verificationResponse?.Data?.Code is 100)
+                        return new ZarinpalVerifyResultDTO(true, verificationResponse.Data.RefId);
+                }
+            }
+
+            return new ZarinpalVerifyResultDTO(false);
+        }
+        catch
+        {
+            return new ZarinpalVerifyResultDTO(false);
+        }
+    }
+
     #endregion
 
     #region dispose
