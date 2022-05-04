@@ -39,4 +39,18 @@ public class ZarinpalServiceTest
         // Assert
         Assert.IsTrue(actual.IsSuccessStatusCode);
     }
+
+    [TestMethod]
+    public async Task VerifyAsyncTest()
+    {
+        // Arrange
+        var verify = new ZarinpalVerifyDTO
+            (5000, "A00000000000000000000000000000000000");
+
+        // Act
+        var actual = await _zarinpalService.VerifyAsync(verify);
+
+        // Assert
+        Assert.IsFalse(actual.IsSuccessStatusCode);
+    }
 }
