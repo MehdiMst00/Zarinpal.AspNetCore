@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Zarinpal.AspNetCore.DTOs;
+using Zarinpal.AspNetCore.Extensions;
 using Zarinpal.AspNetCore.Interfaces;
 
 namespace Zarinpal.AspNetCore.Sample.Controllers
@@ -35,6 +36,24 @@ namespace Zarinpal.AspNetCore.Sample.Controllers
         [HttpGet]
         public async Task<IActionResult> VerifyPayment()
         {
+            // Check 'Status' and 'Authority' query param so zarinpal sent for us
+            if (HttpContext.IsValidZarinpalVerifyQueries())
+            {
+                // If store your price in toman you can use TomanToRial extension
+                int toman = 500;
+                var verify = new ZarinpalVerifyDTO(toman.TomanToRial(),
+                    HttpContext.GetZarinpalAuthorityQuery());
+
+                var response = await _zarinpalService.VerifyAsync(verify);
+                if (response.IsSuccessStatusCode)
+                {
+                    // Do Somethings...
+                    ViewData["RefId"] = response.RefId;
+                }
+
+                return View(response.IsSuccessStatusCode);
+            }
+
             return View(false);
         }
     }
