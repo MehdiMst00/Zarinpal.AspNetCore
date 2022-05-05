@@ -2,7 +2,7 @@
 
 namespace Zarinpal.AspNetCore.DTOs.Sandbox;
 
-internal class SandboxRequest
+internal class SandboxRequestDTO
 {
     [JsonPropertyName("MerchantID")]
     public string? MerchantID { get; set; }

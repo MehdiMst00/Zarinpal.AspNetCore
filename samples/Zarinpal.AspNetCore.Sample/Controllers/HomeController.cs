@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Zarinpal.AspNetCore.DTOs;
+using Zarinpal.AspNetCore.DTOs.Common;
 using Zarinpal.AspNetCore.Extensions;
 using Zarinpal.AspNetCore.Interfaces;
 
@@ -30,8 +31,10 @@ namespace Zarinpal.AspNetCore.Sample.Controllers
             if (result.IsSuccessStatusCode)
                 return Redirect(result.RedirectUrl);
 
-            //if (result.StatusCode == ZarinpalStatusResult.St100)
+            //if (result.StatusCode == ZarinpalStatusCode.St100)
             //{
+            //    // if you want see status message
+            //    var message = result.StatusCode.Value.GetStatusCodeMessage();
             //    // Do Something
             //}
 
@@ -55,6 +58,13 @@ namespace Zarinpal.AspNetCore.Sample.Controllers
                     // Do Somethings...
                     ViewData["RefId"] = response.RefId;
                 }
+
+                //if (response.StatusCode == ZarinpalStatusCode.St100)
+                //{
+                //    // if you want see status message
+                //    var message = response.StatusCode.Value.GetStatusCodeMessage();
+                //    // Do Something
+                //}
 
                 return View(response.IsSuccessStatusCode);
             }

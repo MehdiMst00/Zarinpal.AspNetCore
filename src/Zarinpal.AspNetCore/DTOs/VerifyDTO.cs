@@ -14,16 +14,23 @@ internal class VerifyDTO
     public string? Authority { get; set; }
 }
 
-internal record VerifyResult(
-    [property: JsonPropertyName("data")] VerifyResultData? Data,
-    [property: JsonPropertyName("errors")] object[]? Errors
-);
+internal class VerifyResultData
+{
+    [JsonPropertyName("code")]
+    public int Code { get; set; }
 
-internal record VerifyResultData(
-    [property: JsonPropertyName("code")] int Code,
-    [property: JsonPropertyName("ref_id")] ulong RefId,
-    [property: JsonPropertyName("card_pan")] string CardPan,
-    [property: JsonPropertyName("card_hash")] string CardHash,
-    [property: JsonPropertyName("fee_type")] string FeeType,
-    [property: JsonPropertyName("fee")] int Fee
-);
+    [JsonPropertyName("ref_id")]
+    public ulong RefId { get; set; }
+
+    [JsonPropertyName("card_pan")]
+    public string? CardPan { get; set; }
+
+    [JsonPropertyName("card_hash")]
+    public string? CardHash { get; set; }
+
+    [JsonPropertyName("fee_type")]
+    public string? FeeType { get; set; }
+
+    [JsonPropertyName("fee")]
+    public int Fee { get; set; }
+}

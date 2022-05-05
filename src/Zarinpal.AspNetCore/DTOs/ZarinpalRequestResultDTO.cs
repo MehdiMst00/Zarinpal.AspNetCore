@@ -8,10 +8,10 @@ public class ZarinpalRequestResultDTO
 
     public string RedirectUrl { get; set; }
 
-    public ZarinpalStatusResult StatusCode { get; set; }
+    public ZarinpalStatusCode? StatusCode { get; set; }
 
     public ZarinpalRequestResultDTO(bool isSuccessStatusCode, string redirectUrl,
-        ZarinpalStatusResult statusCode)
+        ZarinpalStatusCode? statusCode)
     {
         IsSuccessStatusCode = isSuccessStatusCode;
         RedirectUrl = redirectUrl;

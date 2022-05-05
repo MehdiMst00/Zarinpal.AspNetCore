@@ -42,17 +42,17 @@ public class ZarinpalService : IZarinpalService
                 if (_zarinpalOptions.ZarinpalMode == ZarinpalMode.Original)
                 {
                     // Original Request
-                    var requestDto = new RequestDTO
-                    {
-                        MerchantId = _zarinpalOptions.MerchantId,
-                        Amount = request.Amount,
-                        Description = request.Description,
-                        VerifyCallbackUrl = request.VerifyCallbackUrl,
-                        Email = !string.IsNullOrEmpty(request.Email) ? request.Email : "",
-                        Mobile = !string.IsNullOrEmpty(request.Mobile) ? request.Mobile : "",
-                    };
+                    var response = await _httpClient.PostAsJsonAsync("v4/payment/request.json",
+                        new RequestDTO
+                        {
+                            MerchantId = _zarinpalOptions.MerchantId,
+                            Amount = request.Amount,
+                            Description = request.Description,
+                            VerifyCallbackUrl = request.VerifyCallbackUrl,
+                            Email = !string.IsNullOrEmpty(request.Email) ? request.Email : "",
+                            Mobile = !string.IsNullOrEmpty(request.Mobile) ? request.Mobile : "",
+                        });
 
-                    var response = await _httpClient.PostAsJsonAsync("v4/payment/request.json", requestDto);
                     if (response.IsSuccessStatusCode)
                     {
                         var jsonObjectResponse =
@@ -66,7 +66,7 @@ public class ZarinpalService : IZarinpalService
                                 if (requestResult?.Code != null)
                                     return new ZarinpalRequestResultDTO(requestResult.Code == 100,
                                         $"https://zarinpal.com/pg/StartPay/{requestResult.Authority}",
-                                        (ZarinpalStatusResult)requestResult.Code.Value);
+                                        (ZarinpalStatusCode)requestResult.Code);
                             }
                             else
                             {
@@ -78,7 +78,7 @@ public class ZarinpalService : IZarinpalService
                                     if (code != null)
                                         return new ZarinpalRequestResultDTO(false,
                                             string.Empty,
-                                            (ZarinpalStatusResult)code.Value);
+                                            (ZarinpalStatusCode)code);
                                 }
                             }
                         }
@@ -87,7 +87,7 @@ public class ZarinpalService : IZarinpalService
                 else
                 {
                     // Sandbox Request
-                    var response = await _httpClient.PostAsJsonAsync("rest/WebGate/PaymentRequest.json", new SandboxRequest
+                    var response = await _httpClient.PostAsJsonAsync("rest/WebGate/PaymentRequest.json", new SandboxRequestDTO
                     {
                         MerchantID = _zarinpalOptions.MerchantId,
                         Amount = request.Amount,
@@ -101,16 +101,16 @@ public class ZarinpalService : IZarinpalService
                     if (requestResponse != null)
                         return new ZarinpalRequestResultDTO(requestResponse.Status == 100,
                             $"https://sandbox.zarinpal.com/pg/StartPay/{requestResponse.Authority}",
-                            (ZarinpalStatusResult)requestResponse.Status);
+                            (ZarinpalStatusCode)requestResponse.Status);
                 }
             }
 
-            return new ZarinpalRequestResultDTO(false, string.Empty, ZarinpalStatusResult.St400);
+            return new ZarinpalRequestResultDTO(false, string.Empty, ZarinpalStatusCode.St400);
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
-            return new ZarinpalRequestResultDTO(false, string.Empty, ZarinpalStatusResult.St400);
+            return new ZarinpalRequestResultDTO(false, string.Empty, ZarinpalStatusCode.St400);
         }
     }
 
@@ -120,22 +120,70 @@ public class ZarinpalService : IZarinpalService
         {
             if (!string.IsNullOrEmpty(verify.Authority) && verify.Amount > 0)
             {
-                VerifyDTO verifyDto = new()
+                if (_zarinpalOptions.ZarinpalMode == ZarinpalMode.Original)
                 {
-                    Amount = verify.Amount,
-                    Authority = verify.Authority,
-                    MerchantId = _zarinpalOptions.MerchantId
-                };
+                    // Original Verify
+                    var response = await _httpClient.PostAsJsonAsync("v4/payment/verify.json",
+                        new VerifyDTO
+                        {
+                            Amount = verify.Amount,
+                            Authority = verify.Authority,
+                            MerchantId = _zarinpalOptions.MerchantId
+                        });
 
-                var response = await _httpClient.PostAsJsonAsync("v4/payment/verify.json", verifyDto);
-
-                if (response.IsSuccessStatusCode)
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var jsonObjectResponse =
+                            JsonSerializer.Deserialize<JsonObject>(await response.Content.ReadAsStringAsync());
+                        if (jsonObjectResponse != null)
+                        {
+                            var data = jsonObjectResponse["data"] as JsonObject;
+                            if (data?.Count > 0)
+                            {
+                                var requestResult = data.Deserialize<VerifyResultData>();
+                                if (requestResult?.Code != null)
+                                    return new ZarinpalVerifyResultDTO(requestResult.Code == 100,
+                                        requestResult.RefId,
+                                        (ZarinpalStatusCode)requestResult.Code);
+                            }
+                            else
+                            {
+                                // we have error here
+                                var errors = jsonObjectResponse["errors"] as JsonObject;
+                                if (errors?.Count > 0)
+                                {
+                                    int? code = errors["code"]?.GetValue<int>();
+                                    if (code != null)
+                                        return new ZarinpalVerifyResultDTO(false,
+                                            null,
+                                            (ZarinpalStatusCode)code);
+                                }
+                            }
+                        }
+                    }
+                }
+                else
                 {
-                    var verificationResponse =
-                        await JsonSerializer.DeserializeAsync<VerifyResult>
-                            (await response.Content.ReadAsStreamAsync());
-                    if (verificationResponse?.Data?.Code is 100)
-                        return new ZarinpalVerifyResultDTO(true, verificationResponse.Data.RefId);
+                    // Sandbox Verify
+                    var response = await _httpClient.PostAsJsonAsync("rest/WebGate/PaymentVerification.json",
+                        new SandboxVerifyDTO
+                        {
+                            Amount = verify.Amount,
+                            Authority = verify.Authority,
+                            MerchantId = _zarinpalOptions.MerchantId
+                        });
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var verifyResponse =
+                            await JsonSerializer.DeserializeAsync<SandboxVerifyResult>
+                                (await response.Content.ReadAsStreamAsync());
+
+                        if (verifyResponse != null)
+                            return new ZarinpalVerifyResultDTO(verifyResponse.Status == 100,
+                                verifyResponse.RefID,
+                                (ZarinpalStatusCode)verifyResponse.Status);
+                    }
                 }
             }
 
