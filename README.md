@@ -7,7 +7,7 @@ Zarinpal Payment Gateway For Asp.Net Core
 PM> Install-Package Zarinpal.AspNetCore -Version 1.1.0
 ```
 
-2. Use AddZarinpal Add Needed Services To Service Container.
+2. Use `AddZarinpal` To Add Needed Services To Service Container.
 ```c#
 var builder = WebApplication.CreateBuilder(args);
 
