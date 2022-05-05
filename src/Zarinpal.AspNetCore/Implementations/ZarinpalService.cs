@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
 using Zarinpal.AspNetCore.DTOs;
+using Zarinpal.AspNetCore.DTOs.Sandbox;
 using Zarinpal.AspNetCore.Interfaces;
 using Zarinpal.AspNetCore.Models;
 
@@ -36,34 +37,55 @@ public class ZarinpalService : IZarinpalService
                 (request.VerifyCallbackUrl.ToLower().StartsWith("http://") ||
                 request.VerifyCallbackUrl.ToLower().StartsWith("https://")))
             {
-                var requestDto = new RequestDTO
+                if (_zarinpalOptions.ZarinpalMode == ZarinpalMode.Original)
                 {
-                    MerchantId = _zarinpalOptions.MerchantId,
-                    Amount = request.Amount,
-                    Description = request.Description,
-                    VerifyCallbackUrl = request.VerifyCallbackUrl,
-                    Email = !string.IsNullOrEmpty(request.Email) ? request.Email : "",
-                    Mobile = !string.IsNullOrEmpty(request.Mobile) ? request.Mobile : "",
-                };
-
-                var response = await _httpClient.PostAsJsonAsync("v4/payment/request.json", requestDto);
-                if (response.IsSuccessStatusCode)
-                {
-                    var stringResponse = await response.Content.ReadAsStringAsync();
-                    dynamic? expandoObject = JsonSerializer.Deserialize<ExpandoObject>(stringResponse) ?? null;
-
-                    if (expandoObject?.errors.ToString() == "[]")
+                    // Original Request
+                    var requestDto = new RequestDTO
                     {
-                        var requestResponse = JsonSerializer.Deserialize<RequestResult>(stringResponse);
-                        if (requestResponse?.Data?.Code == 100)
+                        MerchantId = _zarinpalOptions.MerchantId,
+                        Amount = request.Amount,
+                        Description = request.Description,
+                        VerifyCallbackUrl = request.VerifyCallbackUrl,
+                        Email = !string.IsNullOrEmpty(request.Email) ? request.Email : "",
+                        Mobile = !string.IsNullOrEmpty(request.Mobile) ? request.Mobile : "",
+                    };
+
+                    var response = await _httpClient.PostAsJsonAsync("v4/payment/request.json", requestDto);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var stringResponse = await response.Content.ReadAsStringAsync();
+                        dynamic? expandoObject = JsonSerializer.Deserialize<ExpandoObject>(stringResponse) ?? null;
+
+                        if (expandoObject?.errors.ToString() == "[]")
                         {
-                            if (_zarinpalOptions.ZarinpalMode == ZarinpalMode.Original)
+                            var requestResponse = JsonSerializer.Deserialize<RequestResult>(stringResponse);
+                            if (requestResponse?.Data?.Code == 100)
+                            {
                                 return new ZarinpalRequestResultDTO(true,
                                     $"https://zarinpal.com/pg/StartPay/{requestResponse.Data.Authority}");
-                            else
-                                return new ZarinpalRequestResultDTO(true,
-                                    $"https://sandbox.zarinpal.com/pg/StartPay/{requestResponse.Data.Authority}");
+                            }
                         }
+                    }
+                }
+                else
+                {
+                    // Sandbox Request
+                    var response = await _httpClient.PostAsJsonAsync("rest/WebGate/PaymentRequest.json", new SandboxRequest
+                    {
+                        MerchantID = _zarinpalOptions.MerchantId,
+                        Amount = request.Amount,
+                        CallbackURL = request.VerifyCallbackUrl,
+                        Description = request.Description,
+                    });
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var requestResponse = JsonSerializer.Deserialize<SandboxRequestResult>
+                            (await response.Content.ReadAsStringAsync());
+
+                        if (requestResponse?.Status == 100)
+                            return new ZarinpalRequestResultDTO(true,
+                                $"https://sandbox.zarinpal.com/pg/StartPay/{requestResponse.Authority}");
                     }
                 }
             }

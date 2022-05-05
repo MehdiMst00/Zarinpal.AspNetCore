@@ -8,7 +8,6 @@ internal static class ZarinpalUtilities
 {
     private static readonly List<HttpStatusCode> invalidStatusCode = new()
     {
-        HttpStatusCode.NotFound,
         HttpStatusCode.BadGateway,
         HttpStatusCode.InternalServerError,
         HttpStatusCode.BadRequest,

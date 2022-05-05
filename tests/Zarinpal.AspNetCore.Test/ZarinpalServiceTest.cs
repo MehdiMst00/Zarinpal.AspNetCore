@@ -18,7 +18,7 @@ public class ZarinpalServiceTest
         var serviceProvider = new ServiceCollection()
             .AddZarinpal(options =>
             {
-                options.ZarinpalMode = ZarinpalMode.Original;
+                options.ZarinpalMode = ZarinpalMode.Sandbox;
                 options.MerchantId = "xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx";
             })
             .BuildServiceProvider();
