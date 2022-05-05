@@ -23,15 +23,20 @@ internal class RequestDTO
     public string? VerifyCallbackUrl { get; set; }
 }
 
-internal record RequestResult(
-    [property: JsonPropertyName("data")] RequestResultData? Data,
-    [property: JsonPropertyName("errors")] object[]? Errors
-);
+internal class RequestResultData
+{
+    [JsonPropertyName("code")]
+    public int? Code { get; set; }
 
-internal record RequestResultData(
-    [property: JsonPropertyName("code")] int Code,
-    [property: JsonPropertyName("message")] string Message,
-    [property: JsonPropertyName("authority")] string Authority,
-    [property: JsonPropertyName("fee_type")] string FeeType,
-    [property: JsonPropertyName("fee")] int Fee
-);
+    [JsonPropertyName("message")]
+    public string? Message { get; set; }
+
+    [JsonPropertyName("authority")]
+    public string? Authority { get; set; }
+
+    [JsonPropertyName("fee_type")]
+    public string? FeeType { get; set; }
+
+    [JsonPropertyName("fee")]
+    public int? Fee { get; set; }
+}

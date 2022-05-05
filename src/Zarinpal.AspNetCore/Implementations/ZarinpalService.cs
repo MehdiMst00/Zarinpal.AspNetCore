@@ -1,8 +1,9 @@
-﻿using System.Dynamic;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Microsoft.Extensions.Options;
 using Zarinpal.AspNetCore.DTOs;
+using Zarinpal.AspNetCore.DTOs.Common;
 using Zarinpal.AspNetCore.DTOs.Sandbox;
 using Zarinpal.AspNetCore.Interfaces;
 using Zarinpal.AspNetCore.Models;
@@ -34,6 +35,7 @@ public class ZarinpalService : IZarinpalService
             if (request.Amount > 0 &&
                 !string.IsNullOrEmpty(request.Description) &&
                 !string.IsNullOrEmpty(request.VerifyCallbackUrl) &&
+                _zarinpalOptions.MerchantId?.Length == 36 &&
                 (request.VerifyCallbackUrl.ToLower().StartsWith("http://") ||
                 request.VerifyCallbackUrl.ToLower().StartsWith("https://")))
             {
@@ -53,16 +55,31 @@ public class ZarinpalService : IZarinpalService
                     var response = await _httpClient.PostAsJsonAsync("v4/payment/request.json", requestDto);
                     if (response.IsSuccessStatusCode)
                     {
-                        var stringResponse = await response.Content.ReadAsStringAsync();
-                        dynamic? expandoObject = JsonSerializer.Deserialize<ExpandoObject>(stringResponse) ?? null;
-
-                        if (expandoObject?.errors.ToString() == "[]")
+                        var jsonObjectResponse =
+                            JsonSerializer.Deserialize<JsonObject>(await response.Content.ReadAsStringAsync());
+                        if (jsonObjectResponse != null)
                         {
-                            var requestResponse = JsonSerializer.Deserialize<RequestResult>(stringResponse);
-                            if (requestResponse?.Data?.Code == 100)
+                            var data = jsonObjectResponse["data"] as JsonObject;
+                            if (data?.Count > 0)
                             {
-                                return new ZarinpalRequestResultDTO(true,
-                                    $"https://zarinpal.com/pg/StartPay/{requestResponse.Data.Authority}");
+                                var requestResult = data.Deserialize<RequestResultData>();
+                                if (requestResult?.Code != null)
+                                    return new ZarinpalRequestResultDTO(requestResult.Code == 100,
+                                        $"https://zarinpal.com/pg/StartPay/{requestResult.Authority}",
+                                        (ZarinpalStatusResult)requestResult.Code.Value);
+                            }
+                            else
+                            {
+                                // we have error here
+                                var errors = jsonObjectResponse["errors"] as JsonObject;
+                                if (errors?.Count > 0)
+                                {
+                                    int? code = errors["code"]?.GetValue<int>();
+                                    if (code != null)
+                                        return new ZarinpalRequestResultDTO(false,
+                                            string.Empty,
+                                            (ZarinpalStatusResult)code.Value);
+                                }
                             }
                         }
                     }
@@ -78,23 +95,22 @@ public class ZarinpalService : IZarinpalService
                         Description = request.Description,
                     });
 
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var requestResponse = JsonSerializer.Deserialize<SandboxRequestResult>
-                            (await response.Content.ReadAsStringAsync());
+                    var requestResponse = JsonSerializer.Deserialize<SandboxRequestResult>
+                        (await response.Content.ReadAsStringAsync());
 
-                        if (requestResponse?.Status == 100)
-                            return new ZarinpalRequestResultDTO(true,
-                                $"https://sandbox.zarinpal.com/pg/StartPay/{requestResponse.Authority}");
-                    }
+                    if (requestResponse != null)
+                        return new ZarinpalRequestResultDTO(requestResponse.Status == 100,
+                            $"https://sandbox.zarinpal.com/pg/StartPay/{requestResponse.Authority}",
+                            (ZarinpalStatusResult)requestResponse.Status);
                 }
             }
 
-            return new ZarinpalRequestResultDTO(false, string.Empty);
+            return new ZarinpalRequestResultDTO(false, string.Empty, ZarinpalStatusResult.St400);
         }
-        catch
+        catch (Exception ex)
         {
-            return new ZarinpalRequestResultDTO(false, string.Empty);
+            Console.WriteLine(ex.Message);
+            return new ZarinpalRequestResultDTO(false, string.Empty, ZarinpalStatusResult.St400);
         }
     }
 

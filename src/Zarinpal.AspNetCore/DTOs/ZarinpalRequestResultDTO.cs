@@ -1,4 +1,6 @@
-﻿namespace Zarinpal.AspNetCore.DTOs;
+﻿using Zarinpal.AspNetCore.DTOs.Common;
+
+namespace Zarinpal.AspNetCore.DTOs;
 
 public class ZarinpalRequestResultDTO
 {
@@ -6,9 +8,13 @@ public class ZarinpalRequestResultDTO
 
     public string RedirectUrl { get; set; }
 
-    public ZarinpalRequestResultDTO(bool isSuccessStatusCode, string redirectUrl)
+    public ZarinpalStatusResult StatusCode { get; set; }
+
+    public ZarinpalRequestResultDTO(bool isSuccessStatusCode, string redirectUrl,
+        ZarinpalStatusResult statusCode)
     {
         IsSuccessStatusCode = isSuccessStatusCode;
         RedirectUrl = redirectUrl;
+        StatusCode = statusCode;
     }
 }

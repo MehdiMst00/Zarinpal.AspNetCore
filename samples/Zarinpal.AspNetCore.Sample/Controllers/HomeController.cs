@@ -30,6 +30,11 @@ namespace Zarinpal.AspNetCore.Sample.Controllers
             if (result.IsSuccessStatusCode)
                 return Redirect(result.RedirectUrl);
 
+            //if (result.StatusCode == ZarinpalStatusResult.St100)
+            //{
+            //    // Do Something
+            //}
+
             return RedirectToAction("Index");
         }
 
