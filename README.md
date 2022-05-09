@@ -4,7 +4,7 @@ Zarinpal Payment Gateway For Asp.Net Core
 1. Download And Install Package From [NuGet](https://www.nuget.org/packages/Zarinpal.AspNetCore) Or GitHub
 
 ```
-PM> Install-Package Zarinpal.AspNetCore -Version 1.1.0
+PM> Install-Package Zarinpal.AspNetCore -Version 1.1.2
 ```
 
 2. Use `AddZarinpal` To Add Needed Services To Service Container.
