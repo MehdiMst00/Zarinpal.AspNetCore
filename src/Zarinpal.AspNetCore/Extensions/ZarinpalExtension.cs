@@ -1,28 +1,32 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Zarinpal.AspNetCore.Implementations;
-using Zarinpal.AspNetCore.Interfaces;
-using Zarinpal.AspNetCore.Models;
-using Zarinpal.AspNetCore.Utilities;
-
-namespace Zarinpal.AspNetCore.Extensions;
+﻿namespace Zarinpal.AspNetCore.Extensions;
 
 public static class ZarinpalExtension
 {
-    public static IServiceCollection AddZarinpal(this IServiceCollection services, Action<ZarinpalOptions> options)
+    private static readonly string baseUrl = "https://api.zarinpal.com/pg/";
+    private static readonly string sandboxUrl = "https://sandbox.zarinpal.com/pg/";
+
+    public static IServiceCollection AddZarinpal(this IServiceCollection services, Action<ZarinpalOptions> options, bool useAdvanced = false)
     {
         services.Configure<ZarinpalOptions>(options);
+
         services.AddHttpClient<IZarinpalService, ZarinpalService>((provider, client) =>
         {
             var option = provider.GetService<IOptions<ZarinpalOptions>>();
             if (option == null) return;
 
             client.BaseAddress = option.Value.ZarinpalMode == ZarinpalMode.Original ?
-                new Uri("https://api.zarinpal.com/pg/") :
-                new Uri("https://sandbox.zarinpal.com/pg/");
+                new Uri(baseUrl) :
+                new Uri(sandboxUrl);
 
         }).AddPolicyHandler(ZarinpalUtilities.RetryPolicy());
+
+        if (useAdvanced)
+        {
+            services.AddHttpClient<IAdvancedZarinpalService, AdvancedZarinpalService>(client =>
+            {
+                client.BaseAddress = new Uri(baseUrl);
+            }).AddPolicyHandler(ZarinpalUtilities.RetryPolicy());
+        }
 
         return services;
     }

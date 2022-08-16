@@ -9,10 +9,12 @@ namespace Zarinpal.AspNetCore.Sample.Controllers
     public class HomeController : Controller
     {
         private readonly IZarinpalService _zarinpalService;
+        private readonly IAdvancedZarinpalService _advancedZarinpalService;
 
-        public HomeController(IZarinpalService zarinpalService)
+        public HomeController(IZarinpalService zarinpalService, IAdvancedZarinpalService advancedZarinpalService)
         {
             _zarinpalService = zarinpalService;
+            _advancedZarinpalService = advancedZarinpalService;
         }
 
         public IActionResult Index()
@@ -70,6 +72,13 @@ namespace Zarinpal.AspNetCore.Sample.Controllers
             }
 
             return View(false);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> UnVerifiedPayments()
+        {
+            var result = await _advancedZarinpalService.UnVerifiedAsync();
+            return View(result);
         }
     }
 }

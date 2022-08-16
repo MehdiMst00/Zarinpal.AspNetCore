@@ -1,16 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Version>1.0.0</Version>
+		<Version>1.2.0</Version>
 		<PackageId>Zarinpal.AspNetCore</PackageId>
 		<Description>Asp.Net Core Zarinpal Payment Gateway Package</Description>
 		<RepositoryUrl>https://github.com/MehdiMst00/Zarinpal.AspNetCore</RepositoryUrl>
-		<PackageTags>asp.net core zarinpal;zarinpal;</PackageTags>
+		<PackageTags>Asp.NetCoreZarinpal;ZarinpalRest;ZarinpalAspCore</PackageTags>
 		<Authors>MehdiMst00</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageProjectUrl>https://www.nuget.org/packages/Zarinpal.AspNetCore</PackageProjectUrl>
 	</PropertyGroup>
 
 	<ItemGroup>

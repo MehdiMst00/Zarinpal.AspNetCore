@@ -12,6 +12,7 @@ namespace Zarinpal.AspNetCore.Test;
 public class ZarinpalServiceTest
 {
     private readonly IZarinpalService _zarinpalService;
+    private readonly IAdvancedZarinpalService? _advancedZarinpalService;
 
     public ZarinpalServiceTest()
     {
@@ -24,6 +25,7 @@ public class ZarinpalServiceTest
             .BuildServiceProvider();
 
         _zarinpalService = serviceProvider.GetRequiredService<IZarinpalService>();
+        _advancedZarinpalService = serviceProvider.GetService<IAdvancedZarinpalService>();
     }
 
     [TestMethod]
@@ -49,6 +51,19 @@ public class ZarinpalServiceTest
 
         // Act
         var actual = await _zarinpalService.VerifyAsync(verify);
+
+        // Assert
+        Assert.IsFalse(actual.IsSuccessStatusCode);
+    }
+
+    [TestMethod]
+    public async Task UnVerifiedAsyncTest()
+    {
+        // Act
+        var actual = new ZarinpalUnVerifyDTO(false);
+
+        if (_advancedZarinpalService != null)
+            actual = await _advancedZarinpalService.UnVerifiedAsync();
 
         // Assert
         Assert.IsFalse(actual.IsSuccessStatusCode);

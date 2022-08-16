@@ -1,8 +1,4 @@
-﻿using Polly.Extensions.Http;
-using Polly;
-using System.Net;
-
-namespace Zarinpal.AspNetCore.Utilities;
+﻿namespace Zarinpal.AspNetCore.Utilities;
 
 internal static class ZarinpalUtilities
 {

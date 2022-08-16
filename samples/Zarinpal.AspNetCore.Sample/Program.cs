@@ -10,14 +10,14 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddZarinpal(options =>
 {
     builder.Configuration.GetSection("Zarinpal").Bind(options);
-});
+}, true);
 
 // Or bind it like this
 /* builder.Services.AddZarinpal(options =>
 {
     options.MerchantId = "xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx";
-    options.ZarinpalMode = ZarinpalMode.Original;
-}); */
+    options.ZarinpalMode = ZarinpalMode.Sandbox;
+}, true); */
 
 var app = builder.Build();
 

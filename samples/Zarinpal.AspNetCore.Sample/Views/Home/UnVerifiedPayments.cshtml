@@ -1,0 +1,50 @@
+﻿@model Zarinpal.AspNetCore.DTOs.ZarinpalUnVerifyDTO
+@{
+    ViewData["Title"] = "Un Verified Payments";
+    int num = 1;
+}
+
+<h1>unVerified</h1>
+
+<hr />
+
+<div class="alert alert-info" style="direction: rtl;">
+    ممكن است شما نياز داشته باشيد كه متوجه شويد چه پرداخت هاي توسط وب سرويس شما به درستي انجام شده اما متد verify روي آنها اعمال نشده ، به عبارت ديگر اين متد ليست پرداخت هاي موفقي كه شما آنها را تصديق نكرده ايد را به شما نمايش مي دهد.
+    <a href="https://docs.zarinpal.com/paymentGateway/other/#unverified">Reference</a>
+</div>
+
+@if (Model.Authorities != null && Model.Authorities.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Authority</th>
+                    <th>Amount</th>
+                    <th>CallbackUrl</th>
+                    <th>Referer</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var authority in Model.Authorities)
+                {
+                    <tr>
+                        <td>@num</td>
+                        <td>@authority.Authority</td>
+                        <td>@authority.Amount</td>
+                        <td>@authority.CallbackUrl</td>
+                        <td>@authority.Referer</td>
+                        @* Date type is 'string'*@
+                        @*<td>@authority.Date</td>*@ 
+                        
+                        @* DateTime type is 'DateTime'*@
+                        <td>@authority.DateTime</td>
+                    </tr>
+                    num++;
+                }
+            </tbody>
+        </table>
+    </div>
+}

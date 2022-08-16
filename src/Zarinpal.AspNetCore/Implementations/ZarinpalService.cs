@@ -1,14 +1,4 @@
-﻿using System.Net.Http.Json;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-using Microsoft.Extensions.Options;
-using Zarinpal.AspNetCore.DTOs;
-using Zarinpal.AspNetCore.DTOs.Common;
-using Zarinpal.AspNetCore.DTOs.Sandbox;
-using Zarinpal.AspNetCore.Interfaces;
-using Zarinpal.AspNetCore.Models;
-
-namespace Zarinpal.AspNetCore.Implementations;
+﻿namespace Zarinpal.AspNetCore.Implementations;
 
 public class ZarinpalService : IZarinpalService
 {

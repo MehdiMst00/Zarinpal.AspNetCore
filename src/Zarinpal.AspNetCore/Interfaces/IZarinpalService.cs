@@ -1,6 +1,4 @@
-﻿using Zarinpal.AspNetCore.DTOs;
-
-namespace Zarinpal.AspNetCore.Interfaces;
+﻿namespace Zarinpal.AspNetCore.Interfaces;
 
 public interface IZarinpalService : IDisposable
 {
