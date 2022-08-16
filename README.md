@@ -1,13 +1,14 @@
 # Zarinpal.AspNetCore
-Zarinpal Payment Gateway For Asp.Net Core
+
+Zarinpal payment gateway for Asp.Net Core
 ## Installation
-1. Download And Install Package From [NuGet](https://www.nuget.org/packages/Zarinpal.AspNetCore) Or GitHub
+1. Download and install package from [NuGet](https://www.nuget.org/packages/Zarinpal.AspNetCore) or [GitHub](https://github.com/MehdiMst00/Zarinpal.AspNetCore)
 
 ```
-PM> Install-Package Zarinpal.AspNetCore -Version 1.1.2
+PM> Install-Package Zarinpal.AspNetCore -Version 1.2.0
 ```
 
-2. Use `AddZarinpal` To Add Needed Services To Service Container.
+2. Use `AddZarinpal` to add needed services to service container.
 ```c#
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,9 +25,9 @@ builder.Services.AddZarinpal(options =>
     options.ZarinpalMode = ZarinpalMode.Sandbox;
 });
 ```
-`Note:` If you bind options from appsettings.json [See Sample](https://github.com/MehdiMst00/Zarinpal.AspNetCore/blob/master/samples/Zarinpal.AspNetCore.Sample/appsettings.json)
+`Note:` If you bind options from appsettings.json [See sample](https://github.com/MehdiMst00/Zarinpal.AspNetCore/blob/master/samples/Zarinpal.AspNetCore.Sample/appsettings.json)
 
-3. Inject `IZarinpalService` To Your Controller
+3. Inject `IZarinpalService` to your controller
 
 ```c#
 public class MyController : Controller
@@ -40,7 +41,7 @@ public class MyController : Controller
 }
 ```
 
-4. Finish Setup :)
+4. Finish setup :)
 
 ## Request Payment
 ```c#
@@ -82,23 +83,49 @@ public async Task<IActionResult> VerifyPayment()
 }
 ```
 
-#### Pay Attention: 
-- In Sandbox Don't Need Set MerchantId. (`Just A String Of 36 Characters`)
-- In Sandbox Use Amount In `Toman`
+## Pay attention
+- In sandbox don't need set MerchantId. (`Just a string of 36 characters`)
+- In sandbox use amount in `Toman`
 
-## Extensions Maybe You Need In Your Project
+## What is `IAdvancedZarinpalService`?
+- If you wanna use 'UnVerified' or 'Refund'(Coming soon) method, you must inject `IAdvancedZarinpalService` to service container. (Automatically not injected)
+- So let's come back into `Program.cs` and edit it: 
 ```c#
-// For Verify Payment
+// Set second argument to 'true'
+builder.Services.AddZarinpal(options =>
+{
+    builder.Configuration.GetSection("Zarinpal").Bind(options);
+}, true);
+```
+- Now we can use `IAdvancedZarinpalService`:
+```c#
+private readonly IAdvancedZarinpalService _advancedZarinpalService;
+
+public MyController(IAdvancedZarinpalService advancedZarinpalService)
+{
+    _advancedZarinpalService = advancedZarinpalService;
+}
+
+public async Task<IActionResult> UnVerifiedPayments()
+{
+    var result = await _advancedZarinpalService.UnVerifiedAsync();
+    return Ok(result);
+}
+```
+
+## Extensions maybe you need in your project
+```c#
+// For verify payment
 bool isValidZarinpalVerifyQueries = HttpContext.IsValidZarinpalVerifyQueries();
 
-// Get Authority From Query Params
+// Get authority from query params
 string authority = HttpContext.GetZarinpalAuthorityQuery();
 
-// Convert Toman To Rial
+// Convert toman to rial
 int toman = 500;
 int rial = toman.TomanToRial();
 
-// Get Status Message
+// Get status message
 var message = ZarinpalStatusCode.St100.GetStatusCodeMessage();
 ```
 ## Support
@@ -108,4 +135,4 @@ For support, [click here](https://github.com/MehdiMst00#-you-can-reach-me-on).
 If you liked the project, please give a star :)
 
 ## License
-[MIT](https://choosealicense.com/licenses/mit/)
+[MIT](https://github.com/MehdiMst00/Zarinpal.AspNetCore/blob/master/LICENSE.txt)
