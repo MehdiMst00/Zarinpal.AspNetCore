@@ -10,7 +10,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddZarinpal(options =>
 {
     builder.Configuration.GetSection("Zarinpal").Bind(options);
-}, true);
+});
 
 // Or bind it like this
 /* builder.Services.AddZarinpal(options =>

@@ -1,6 +1,4 @@
-﻿using Zarinpal.AspNetCore.DTOs.Common;
-
-namespace Zarinpal.AspNetCore.DTOs;
+﻿namespace Zarinpal.AspNetCore.DTOs;
 
 public class ZarinpalVerifyResultDTO
 {

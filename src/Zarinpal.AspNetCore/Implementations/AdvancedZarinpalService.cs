@@ -71,6 +71,7 @@ public class AdvancedZarinpalService : IAdvancedZarinpalService
     public void Dispose()
     {
         _httpClient?.Dispose();
+        GC.SuppressFinalize(this);
     }
 
     #endregion

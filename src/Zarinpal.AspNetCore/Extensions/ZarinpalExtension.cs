@@ -5,22 +5,39 @@ public static class ZarinpalExtension
     private static readonly string baseUrl = "https://api.zarinpal.com/pg/";
     private static readonly string sandboxUrl = "https://sandbox.zarinpal.com/pg/";
 
-    public static IServiceCollection AddZarinpal(this IServiceCollection services, Action<ZarinpalOptions> options, bool useAdvanced = false)
+    public static IServiceCollection AddZarinpal(this IServiceCollection services, Action<ZarinpalOptions> options)
     {
         services.Configure<ZarinpalOptions>(options);
 
-        services.AddHttpClient<IZarinpalService, ZarinpalService>((provider, client) =>
+        var provider = services.BuildServiceProvider();
+        ZarinpalOptions? option = provider.GetService<IOptions<ZarinpalOptions>>()?.Value;
+
+        if (option == null)
         {
-            var option = provider.GetService<IOptions<ZarinpalOptions>>();
-            if (option == null) return;
+            throw new ZarinpalException("لطفا تنظیمات زرین پال را در (Startup یا Program) برنامه به درستی وارد کنید !!!");
+        }
 
-            client.BaseAddress = option.Value.ZarinpalMode == ZarinpalMode.Original ?
-                new Uri(baseUrl) :
-                new Uri(sandboxUrl);
+        if (!InternalExtension.IsValidMerchantId(option.MerchantId))
+        {
+            throw new Exception("لطفا كد 36 كاراكتري اختصاصي پذيرنده را به درستی وارد کنید !!!");
+        }
 
-        }).AddPolicyHandler(ZarinpalUtilities.RetryPolicy());
+        if (option.ZarinpalMode == ZarinpalMode.Sandbox) // Sandbox
+        {
+            services.AddHttpClient<IZarinpalService, SandboxZarinpalService>((client) =>
+            {
+                client.BaseAddress = new Uri(sandboxUrl);
+            }).AddPolicyHandler(ZarinpalUtilities.RetryPolicy());
+        }
+        else // Original
+        {
+            services.AddHttpClient<IZarinpalService, OriginalZarinpalService>((client) =>
+            {
+                client.BaseAddress = new Uri(baseUrl);
+            }).AddPolicyHandler(ZarinpalUtilities.RetryPolicy());
+        }
 
-        if (useAdvanced)
+        if (option.UseAdvanced)
         {
             services.AddHttpClient<IAdvancedZarinpalService, AdvancedZarinpalService>(client =>
             {

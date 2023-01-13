@@ -8,7 +8,7 @@
 		<PackageId>Zarinpal.AspNetCore</PackageId>
 		<Description>Asp.Net Core Zarinpal Payment Gateway Package</Description>
 		<RepositoryUrl>https://github.com/MehdiMst00/Zarinpal.AspNetCore</RepositoryUrl>
-		<PackageTags>Asp.NetCoreZarinpal;ZarinpalRest;ZarinpalAspCore</PackageTags>
+		<PackageTags>AspNetCoreZarinpal;ZarinpalAspNetCore;ZarinpalRest;ZarinpalSDK</PackageTags>
 		<Authors>MehdiMst00</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageProjectUrl>https://www.nuget.org/packages/Zarinpal.AspNetCore</PackageProjectUrl>
@@ -16,16 +16,14 @@
 
 	<ItemGroup>
 		<Folder Include="Interfaces\" />
-		<Folder Include="Implementations\" />
 		<Folder Include="Models\" />
-		<Folder Include="Extensions\" />
 		<Folder Include="Utilities\" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Http.Polly" Version="6.0.4" />
+		<PackageReference Include="Microsoft.Extensions.Http.Polly" Version="6.0.13" />
 		<PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
 	</ItemGroup>
 

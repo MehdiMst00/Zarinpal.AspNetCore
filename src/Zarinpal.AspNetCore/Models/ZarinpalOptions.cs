@@ -4,10 +4,11 @@ public class ZarinpalOptions
 {
     public string? MerchantId { get; set; }
     public ZarinpalMode ZarinpalMode { get; set; }
+    public bool UseAdvanced { get; set; }
 }
 
 public enum ZarinpalMode
 {
-    Sandbox,
-    Original
+    Sandbox = 0,
+    Original = 1
 }

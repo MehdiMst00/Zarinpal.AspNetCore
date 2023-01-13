@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zarinpal.AspNetCore.Test", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{98D47A2D-E8CF-4DA9-ADCF-6544C867B9CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zarinpal.AspNetCore.Sample", "samples\Zarinpal.AspNetCore.Sample\Zarinpal.AspNetCore.Sample.csproj", "{FA1B28F0-AA51-4067-8C45-29350CA10EBD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zarinpal.AspNetCore.Sample", "samples\Zarinpal.AspNetCore.Sample\Zarinpal.AspNetCore.Sample.csproj", "{FA1B28F0-AA51-4067-8C45-29350CA10EBD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
