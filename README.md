@@ -89,13 +89,14 @@ public async Task<IActionResult> VerifyPayment()
 
 ## What is `IAdvancedZarinpalService`?
 - If you wanna use 'UnVerified' or 'Refund'(Coming soon) method, you must inject `IAdvancedZarinpalService` to service container. (Automatically not injected)
-- So let's come back into `Program.cs` and edit it: 
+- So let's come back into `Program.cs` and edit it (Or Set it in `appsettings.json` like [sample](https://github.com/MehdiMst00/Zarinpal.AspNetCore/blob/master/samples/Zarinpal.AspNetCore.Sample/appsettings.json)): 
 ```c#
-// Set second argument to 'true'
 builder.Services.AddZarinpal(options =>
 {
-    builder.Configuration.GetSection("Zarinpal").Bind(options);
-}, true);
+    options.MerchantId = "xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx";
+    options.ZarinpalMode = ZarinpalMode.Original;
+    options.UseAdvanced = true;
+});
 ```
 - Now we can use `IAdvancedZarinpalService`:
 ```c#
