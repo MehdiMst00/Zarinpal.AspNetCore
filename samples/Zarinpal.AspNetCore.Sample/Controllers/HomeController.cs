@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Zarinpal.AspNetCore.DTOs;
-using Zarinpal.AspNetCore.DTOs.Common;
 using Zarinpal.AspNetCore.Extensions;
 using Zarinpal.AspNetCore.Interfaces;
 
@@ -30,6 +29,17 @@ namespace Zarinpal.AspNetCore.Sample.Controllers
                 "test@test.com", "09123456789");
 
             var result = await _zarinpalService.RequestAsync(request);
+
+            if (result.Data != null)
+            {
+                // You can store or log zarinpal data in database
+                string authority = result.Data.Authority;
+                int code = result.Data.Code;
+                int fee = result.Data.Fee;
+                string feeType = result.Data.FeeType;
+                string message = result.Data.Message;
+            }
+
             if (result.IsSuccessStatusCode)
                 return Redirect(result.RedirectUrl);
 
@@ -55,6 +65,18 @@ namespace Zarinpal.AspNetCore.Sample.Controllers
                     HttpContext.GetZarinpalAuthorityQuery());
 
                 var response = await _zarinpalService.VerifyAsync(verify);
+
+                if (response.Data != null)
+                {
+                    // You can store or log zarinpal data in database
+                    ulong refId = response.Data.RefId;
+                    int fee = response.Data.Fee;
+                    string feeType = response.Data.FeeType;
+                    int code = response.Data.Code;
+                    string cardHash = response.Data.CardHash;
+                    string cardPan = response.Data.CardPan;
+                }
+
                 if (response.IsSuccessStatusCode)
                 {
                     // Do Somethings...

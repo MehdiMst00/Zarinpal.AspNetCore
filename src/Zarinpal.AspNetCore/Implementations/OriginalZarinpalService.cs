@@ -53,9 +53,21 @@ public class OriginalZarinpalService : IZarinpalService
                     {
                         var requestResult = data.Deserialize<RequestResultData>();
                         if (requestResult?.Code != null)
+                        {
                             return new ZarinpalRequestResultDTO(requestResult.Code == 100,
                                 $"https://zarinpal.com/pg/StartPay/{requestResult.Authority}",
-                                (ZarinpalStatusCode)requestResult.Code);
+                                (ZarinpalStatusCode)requestResult.Code)
+                            {
+                                Data = new ZarinpalRequestData
+                                {
+                                    Authority = requestResult.Authority ?? string.Empty,
+                                    Code = requestResult.Code.GetValueOrDefault(),
+                                    Fee = requestResult.Fee.GetValueOrDefault(),
+                                    FeeType = requestResult.FeeType ?? string.Empty,
+                                    Message = requestResult.Message ?? string.Empty,
+                                }
+                            };
+                        }
                     }
                     else
                     {
@@ -113,7 +125,18 @@ public class OriginalZarinpalService : IZarinpalService
                         if (requestResult?.Code != null)
                             return new ZarinpalVerifyResultDTO(requestResult.Code == 100,
                                 requestResult.RefId,
-                                (ZarinpalStatusCode)requestResult.Code);
+                                (ZarinpalStatusCode)requestResult.Code)
+                            {
+                                Data = new ZarinpalVerifyResultData
+                                {
+                                    RefId = requestResult.RefId,
+                                    Fee = requestResult.Fee,
+                                    FeeType = requestResult.FeeType ?? string.Empty,
+                                    CardHash = requestResult.CardHash ?? string.Empty,
+                                    CardPan = requestResult.CardPan ?? string.Empty,
+                                    Code = requestResult.Code,
+                                }
+                            };
                     }
                     else
                     {

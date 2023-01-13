@@ -44,7 +44,17 @@ public class SandboxZarinpalService : IZarinpalService
             if (requestResponse != null)
                 return new ZarinpalRequestResultDTO(requestResponse.Status == 100,
                     $"https://sandbox.zarinpal.com/pg/StartPay/{requestResponse.Authority}",
-                    (ZarinpalStatusCode)requestResponse.Status);
+                    (ZarinpalStatusCode)requestResponse.Status)
+                {
+                    Data = new ZarinpalRequestData
+                    {
+                        Authority = requestResponse.Authority,
+                        Code = requestResponse.Status,
+                        Fee = 0,
+                        FeeType = "SANDBOX",
+                        Message = "SANDBOX"
+                    }
+                };
 
             return new ZarinpalRequestResultDTO(false, string.Empty, ZarinpalStatusCode.St400);
         }
@@ -81,7 +91,18 @@ public class SandboxZarinpalService : IZarinpalService
                 if (verifyResponse != null)
                     return new ZarinpalVerifyResultDTO(verifyResponse.Status == 100,
                         verifyResponse.RefID,
-                        (ZarinpalStatusCode)verifyResponse.Status);
+                        (ZarinpalStatusCode)verifyResponse.Status)
+                    {
+                        Data = new ZarinpalVerifyResultData
+                        {
+                            RefId = verifyResponse.RefID,
+                            Code = verifyResponse.Status,
+                            Fee = 0,
+                            FeeType = "SANDBOX",
+                            CardHash = "SANDBOX",
+                            CardPan = "SANDBOX"
+                        }
+                    };
             }
 
             return new ZarinpalVerifyResultDTO(false);

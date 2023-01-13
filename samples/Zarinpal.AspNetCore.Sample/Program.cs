@@ -13,11 +13,12 @@ builder.Services.AddZarinpal(options =>
 });
 
 // Or bind it like this
-/* builder.Services.AddZarinpal(options =>
-{
-    options.MerchantId = "xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx";
-    options.ZarinpalMode = ZarinpalMode.Sandbox;
-}, true); */
+//builder.Services.AddZarinpal(options =>
+//{
+//    options.MerchantId = "xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx";
+//    options.ZarinpalMode = ZarinpalMode.Original;
+//    options.UseAdvanced = true;
+//});
 
 var app = builder.Build();
 
