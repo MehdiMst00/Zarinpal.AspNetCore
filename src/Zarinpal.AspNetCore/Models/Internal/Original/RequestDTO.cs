@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Zarinpal.AspNetCore.DTOs;
+namespace Zarinpal.AspNetCore.Models.Internal.Original;
 
 internal class RequestDTO
 {

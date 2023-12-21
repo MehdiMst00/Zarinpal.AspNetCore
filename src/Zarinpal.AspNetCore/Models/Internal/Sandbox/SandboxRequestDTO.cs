@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Zarinpal.AspNetCore.DTOs.Sandbox;
+namespace Zarinpal.AspNetCore.Models.Internal.Sandbox;
 
 internal class SandboxRequestDTO
 {

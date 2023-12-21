@@ -2,9 +2,9 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 using Zarinpal.AspNetCore.DTOs;
+using Zarinpal.AspNetCore.Enums;
 using Zarinpal.AspNetCore.Extensions;
 using Zarinpal.AspNetCore.Interfaces;
-using Zarinpal.AspNetCore.Models;
 
 namespace Zarinpal.AspNetCore.Test;
 

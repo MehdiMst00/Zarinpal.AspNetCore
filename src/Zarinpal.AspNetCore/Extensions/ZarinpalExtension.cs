@@ -7,15 +7,10 @@ public static class ZarinpalExtension
 
     public static IServiceCollection AddZarinpal(this IServiceCollection services, Action<ZarinpalOptions> options)
     {
-        services.Configure<ZarinpalOptions>(options);
+        services.Configure(options);
 
         var provider = services.BuildServiceProvider();
-        ZarinpalOptions? option = provider.GetService<IOptions<ZarinpalOptions>>()?.Value;
-
-        if (option == null)
-        {
-            throw new ZarinpalException("لطفا تنظیمات زرین پال را در (Startup یا Program) برنامه به درستی وارد کنید !!!");
-        }
+        ZarinpalOptions option = provider.GetRequiredService<IOptions<ZarinpalOptions>>().Value;
 
         if (!InternalExtension.IsValidMerchantId(option.MerchantId))
         {
@@ -55,13 +50,13 @@ public static class ZarinpalExtension
                && httpContext.Request.Query["Authority"] != "";
     }
 
-    public static string GetZarinpalAuthorityQuery(this HttpContext httpContext)
+    public static string? GetZarinpalAuthorityQuery(this HttpContext httpContext)
     {
         return httpContext.Request.Query["Authority"];
     }
 
     public static int TomanToRial(this int toman)
     {
-        return Convert.ToInt32(Convert.ToString(toman) + "0");
+        return Convert.ToInt32(toman.ToString() + "0");
     }
 }

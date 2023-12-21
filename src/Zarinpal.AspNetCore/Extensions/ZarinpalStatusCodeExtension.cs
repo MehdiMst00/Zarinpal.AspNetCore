@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
-using Zarinpal.AspNetCore.DTOs.Common;
 
 namespace Zarinpal.AspNetCore.Extensions;
 

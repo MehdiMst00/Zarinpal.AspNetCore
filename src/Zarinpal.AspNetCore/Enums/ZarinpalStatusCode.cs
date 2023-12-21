@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Zarinpal.AspNetCore.DTOs.Common;
+namespace Zarinpal.AspNetCore.Enums;
 
 public enum ZarinpalStatusCode : int
 {

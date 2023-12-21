@@ -10,7 +10,8 @@ namespace Zarinpal.AspNetCore.Sample.Controllers
         private readonly IZarinpalService _zarinpalService;
         private readonly IAdvancedZarinpalService _advancedZarinpalService;
 
-        public HomeController(IZarinpalService zarinpalService, IAdvancedZarinpalService advancedZarinpalService)
+        public HomeController(IZarinpalService zarinpalService, 
+            IAdvancedZarinpalService advancedZarinpalService)
         {
             _zarinpalService = zarinpalService;
             _advancedZarinpalService = advancedZarinpalService;
@@ -62,7 +63,7 @@ namespace Zarinpal.AspNetCore.Sample.Controllers
                 // If store your price in toman you can use TomanToRial extension
                 int toman = 500;
                 var verify = new ZarinpalVerifyDTO(toman.TomanToRial(),
-                    HttpContext.GetZarinpalAuthorityQuery());
+                    HttpContext.GetZarinpalAuthorityQuery()!);
 
                 var response = await _zarinpalService.VerifyAsync(verify);
 

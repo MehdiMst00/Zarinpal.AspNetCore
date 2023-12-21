@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using Zarinpal.AspNetCore.DTOs.Common;
 
 namespace Zarinpal.AspNetCore.DTOs;
 
