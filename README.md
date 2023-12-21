@@ -5,7 +5,7 @@ Zarinpal payment gateway for Asp.Net Core
 1. Download and install package from [NuGet](https://www.nuget.org/packages/Zarinpal.AspNetCore) or [GitHub](https://github.com/MehdiMst00/Zarinpal.AspNetCore)
 
 ```
-PM> Install-Package Zarinpal.AspNetCore -Version 3.0.0
+PM> Install-Package Zarinpal.AspNetCore -Version 3.1.0
 ```
 
 2. Use `AddZarinpal` to add needed services to service container.
@@ -23,9 +23,10 @@ builder.Services.AddZarinpal(options =>
 {
     options.MerchantId = "xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx";
     options.ZarinpalMode = ZarinpalMode.Sandbox;
+    options.Currency = ZarinpalCurrency.IRT;
 });
 ```
-`Note:` If you bind options from appsettings.json [See sample](https://github.com/MehdiMst00/Zarinpal.AspNetCore/blob/master/samples/Zarinpal.AspNetCore.Sample/appsettings.json)
+`Note:` If you bind options from appsettings.json [See sample](https://github.com/MehdiMst00/Zarinpal.AspNetCore/blob/net8.0/samples/Zarinpal.AspNetCore.Sample/appsettings.json)
 
 3. Inject `IZarinpalService` to your controller
 
@@ -45,8 +46,21 @@ public class MyController : Controller
 
 ## Request Payment
 ```c#
-// Amount For Original Payment Is In Rial 
-var request = new ZarinpalRequestDTO(5000, "خرید",
+int toman = 5000;
+int rial = toman.TomanToRial(); // If store your price in toman you can use TomanToRial extension
+
+/*
+ * Pay atttention: Currency is important, default is IRR (Rial)
+ *
+ * Here we set it to Toman (IRT)
+   "Zarinpal": {
+    ... 
+    "Currency": "IRT", // IRR - IRT
+    ...
+}
+ */
+
+var request = new ZarinpalRequestDTO(toman, "خرید",
     "https://localhost:7219/Home/VerifyPayment",
     "test@test.com", "09123456789");
 
@@ -74,10 +88,22 @@ public async Task<IActionResult> VerifyPayment()
     // Check 'Status' and 'Authority' query param so zarinpal sent for us
     if (HttpContext.IsValidZarinpalVerifyQueries())
     {
-        // If store your price in toman you can use TomanToRial extension
-        int toman = 500;
-        var verify = new ZarinpalVerifyDTO(toman.TomanToRial(),
-            HttpContext.GetZarinpalAuthorityQuery());
+        int toman = 5000;
+        int rial = toman.TomanToRial(); // If store your price in toman you can use TomanToRial extension
+
+        /*
+         * Pay atttention: Currency is important, default is IRR (Rial)
+         *
+         * Here we set it to toman (IRT)
+           "Zarinpal": {
+            ... 
+            "Currency": "IRT", // IRR - IRT
+            ...
+        }
+         */
+
+        var verify = new ZarinpalVerifyDTO(toman,
+            HttpContext.GetZarinpalAuthorityQuery()!);
 
         var response = await _zarinpalService.VerifyAsync(verify);
         
@@ -111,13 +137,14 @@ public async Task<IActionResult> VerifyPayment()
 - In sandbox use amount in `Toman`
 
 ## What is `IAdvancedZarinpalService`?
-- If you wanna use 'UnVerified' or 'Refund'(Coming soon) method, you must inject `IAdvancedZarinpalService` to service container. (Automatically not injected)
+- If you wanna use 'UnVerified' method, you must inject `IAdvancedZarinpalService` to service container. (Automatically not injected)
 - So let's come back into `Program.cs` and edit it (Or Set it in `appsettings.json` like [sample](https://github.com/MehdiMst00/Zarinpal.AspNetCore/blob/master/samples/Zarinpal.AspNetCore.Sample/appsettings.json)): 
 ```c#
 builder.Services.AddZarinpal(options =>
 {
     options.MerchantId = "xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx";
     options.ZarinpalMode = ZarinpalMode.Original;
+    options.Currency = ZarinpalCurrency.IRT;
     options.UseAdvanced = true;
 });
 ```

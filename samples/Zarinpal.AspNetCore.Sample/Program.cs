@@ -1,5 +1,6 @@
+using Zarinpal.AspNetCore.Consts;
+using Zarinpal.AspNetCore.Enums;
 using Zarinpal.AspNetCore.Extensions;
-using Zarinpal.AspNetCore.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,7 @@ builder.Services.AddZarinpal(options =>
 //{
 //    options.MerchantId = "xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx";
 //    options.ZarinpalMode = ZarinpalMode.Original;
+//    options.Currency = ZarinpalCurrency.IRT;
 //    options.UseAdvanced = true;
 //});
 

@@ -19,6 +19,9 @@ internal class RequestDTO
     [JsonPropertyName("description")]
     public string? Description { get; set; }
 
+    [JsonPropertyName("currency")]
+    public string? Currency { get; set; }
+
     [JsonPropertyName("callback_url")]
     public string? VerifyCallbackUrl { get; set; }
 }

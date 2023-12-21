@@ -30,13 +30,26 @@ public class SandboxZarinpalService : IZarinpalService
 
         try
         {
-            var response = await _httpClient.PostAsJsonAsync("rest/WebGate/PaymentRequest.json", new SandboxRequestDTO
+            var sandboxRequest = new SandboxRequestDTO
             {
                 MerchantID = _zarinpalOptions.MerchantId,
-                Amount = request.Amount,
                 CallbackURL = request.VerifyCallbackUrl,
                 Description = request.Description,
-            });
+            };
+
+            // Sandbox gateway use toamn, if currency equals to IRR, we should convert rial to toman
+            if (_zarinpalOptions.Currency == ZarinpalCurrency.IRR)
+            {
+                // remove the last 0 in rial
+                var strRialAmount = request.Amount.ToString();
+                sandboxRequest.Amount = Convert.ToInt32(strRialAmount.Remove(strRialAmount.Length - 1));
+            }
+            else
+            {
+                sandboxRequest.Amount = request.Amount;
+            }
+
+            var response = await _httpClient.PostAsJsonAsync("rest/WebGate/PaymentRequest.json", sandboxRequest);
 
             var requestResponse = JsonSerializer.Deserialize<SandboxRequestResult>
                 (await response.Content.ReadAsStringAsync());
@@ -74,13 +87,25 @@ public class SandboxZarinpalService : IZarinpalService
 
         try
         {
-            var response = await _httpClient.PostAsJsonAsync("rest/WebGate/PaymentVerification.json",
-                new SandboxVerifyDTO
-                {
-                    Amount = verify.Amount,
-                    Authority = verify.Authority,
-                    MerchantId = _zarinpalOptions.MerchantId
-                });
+            var sandboxRequest = new SandboxVerifyDTO
+            {
+                Authority = verify.Authority,
+                MerchantId = _zarinpalOptions.MerchantId
+            };
+
+            // Sandbox gateway use toamn, if currency equals to IRR, we should convert rial to toman
+            if (_zarinpalOptions.Currency == ZarinpalCurrency.IRR)
+            {
+                // remove the last 0 in rial
+                var strRialAmount = verify.Amount.ToString();
+                sandboxRequest.Amount = Convert.ToInt32(strRialAmount.Remove(strRialAmount.Length - 1));
+            }
+            else
+            {
+                sandboxRequest.Amount = verify.Amount;
+            }
+
+            var response = await _httpClient.PostAsJsonAsync("rest/WebGate/PaymentVerification.json", sandboxRequest);
 
             if (response.IsSuccessStatusCode)
             {

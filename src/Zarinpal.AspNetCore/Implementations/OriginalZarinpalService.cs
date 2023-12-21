@@ -37,6 +37,7 @@ public class OriginalZarinpalService : IZarinpalService
                     Amount = request.Amount,
                     Description = request.Description,
                     VerifyCallbackUrl = request.VerifyCallbackUrl,
+                    Currency = _zarinpalOptions.Currency,
                     Email = !string.IsNullOrEmpty(request.Email) ? request.Email : "",
                     Mobile = !string.IsNullOrEmpty(request.Mobile) ? request.Mobile : "",
                 });
