@@ -12,15 +12,18 @@ public class ZarinpalRequestDTO
 
     public string? VerifyCallbackUrl { get; set; }
 
+    public string? OrderId { get; set; }
+
     public ZarinpalRequestDTO() { }
 
     public ZarinpalRequestDTO(int amount, string description, string verifyCallbackUrl,
-        string? email = null, string? mobile = null)
+        string? email = null, string? mobile = null, string? orderId = null)
     {
         Amount = amount;
         Description = description;
         VerifyCallbackUrl = verifyCallbackUrl;
         Email = email;
         Mobile = mobile;
+        OrderId = orderId;
     }
 }

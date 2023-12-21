@@ -1,4 +1,6 @@
-﻿namespace Zarinpal.AspNetCore.Implementations;
+﻿using System.Text.Json.Serialization;
+
+namespace Zarinpal.AspNetCore.Implementations;
 
 public class OriginalZarinpalService : IZarinpalService
 {
@@ -38,8 +40,16 @@ public class OriginalZarinpalService : IZarinpalService
                     Description = request.Description,
                     VerifyCallbackUrl = request.VerifyCallbackUrl,
                     Currency = _zarinpalOptions.Currency,
-                    Email = !string.IsNullOrEmpty(request.Email) ? request.Email : "",
-                    Mobile = !string.IsNullOrEmpty(request.Mobile) ? request.Mobile : "",
+                    Metadata = new RequestMetadataDTO
+                    {
+                        OrderId = request.OrderId,
+                        Email = request.Email,
+                        Mobile = request.Mobile,
+                    }
+                },
+                new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
                 });
 
             if (response.IsSuccessStatusCode)

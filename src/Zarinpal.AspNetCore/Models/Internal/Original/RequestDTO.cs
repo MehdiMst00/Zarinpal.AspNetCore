@@ -7,12 +7,6 @@ internal class RequestDTO
     [JsonPropertyName("merchant_id")]
     public string? MerchantId { get; set; }
 
-    [JsonPropertyName("email")]
-    public string? Email { get; set; }
-
-    [JsonPropertyName("mobile")]
-    public string? Mobile { get; set; }
-
     [JsonPropertyName("amount")]
     public int Amount { get; set; }
 
@@ -24,6 +18,21 @@ internal class RequestDTO
 
     [JsonPropertyName("callback_url")]
     public string? VerifyCallbackUrl { get; set; }
+
+    [JsonPropertyName("metadata")]
+    public RequestMetadataDTO? Metadata { get; set; }
+}
+
+internal class RequestMetadataDTO
+{
+    [JsonPropertyName("email")]
+    public string? Email { get; set; }
+
+    [JsonPropertyName("mobile")]
+    public string? Mobile { get; set; }
+
+    [JsonPropertyName("order_id")]
+    public string? OrderId { get; set; }
 }
 
 internal class RequestResultData
