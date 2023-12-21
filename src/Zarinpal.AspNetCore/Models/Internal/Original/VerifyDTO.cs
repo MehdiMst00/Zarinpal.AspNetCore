@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Zarinpal.AspNetCore.Models.Internal.Original;
+﻿namespace Zarinpal.AspNetCore.Models.Internal.Original;
 
 internal class VerifyDTO
 {
@@ -12,6 +10,9 @@ internal class VerifyDTO
 
     [JsonPropertyName("authority")]
     public string? Authority { get; set; }
+
+    [JsonPropertyName("wages")]
+    public List<ZarinpalWages>? Wages { get; set; }
 }
 
 internal class VerifyResultData
@@ -33,4 +34,7 @@ internal class VerifyResultData
 
     [JsonPropertyName("fee")]
     public int Fee { get; set; }
+
+    [JsonPropertyName("wages")]
+    public List<ZarinpalWages>? Wages { get; set; }
 }

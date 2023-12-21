@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Zarinpal.AspNetCore.Implementations;
+﻿namespace Zarinpal.AspNetCore.Implementations;
 
 public class OriginalZarinpalService : IZarinpalService
 {
@@ -45,7 +43,9 @@ public class OriginalZarinpalService : IZarinpalService
                         OrderId = request.OrderId,
                         Email = request.Email,
                         Mobile = request.Mobile,
-                    }
+                        CardPan = request.CardPan,
+                    },
+                    Wages = request.Wages
                 },
                 new JsonSerializerOptions
                 {
@@ -71,11 +71,11 @@ public class OriginalZarinpalService : IZarinpalService
                             {
                                 Data = new ZarinpalRequestData
                                 {
-                                    Authority = requestResult.Authority ?? string.Empty,
+                                    Authority = requestResult.Authority,
                                     Code = requestResult.Code.GetValueOrDefault(),
                                     Fee = requestResult.Fee.GetValueOrDefault(),
-                                    FeeType = requestResult.FeeType ?? string.Empty,
-                                    Message = requestResult.Message ?? string.Empty,
+                                    FeeType = requestResult.FeeType,
+                                    Message = requestResult.Message,
                                 }
                             };
                         }
@@ -142,10 +142,11 @@ public class OriginalZarinpalService : IZarinpalService
                                 {
                                     RefId = requestResult.RefId,
                                     Fee = requestResult.Fee,
-                                    FeeType = requestResult.FeeType ?? string.Empty,
-                                    CardHash = requestResult.CardHash ?? string.Empty,
-                                    CardPan = requestResult.CardPan ?? string.Empty,
+                                    FeeType = requestResult.FeeType,
+                                    CardHash = requestResult.CardHash,
+                                    CardPan = requestResult.CardPan,
                                     Code = requestResult.Code,
+                                    Wages = requestResult.Wages
                                 }
                             };
                     }

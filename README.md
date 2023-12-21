@@ -138,7 +138,7 @@ public async Task<IActionResult> VerifyPayment()
 
 ## What is `IAdvancedZarinpalService`?
 - If you wanna use 'UnVerified' method, you must inject `IAdvancedZarinpalService` to service container. (Automatically not injected)
-- So let's come back into `Program.cs` and edit it (Or Set it in `appsettings.json` like [sample](https://github.com/MehdiMst00/Zarinpal.AspNetCore/blob/master/samples/Zarinpal.AspNetCore.Sample/appsettings.json)): 
+- So let's come back into `Program.cs` and edit it (Or Set it in `appsettings.json` like [sample](https://github.com/MehdiMst00/Zarinpal.AspNetCore/blob/net8.0/samples/Zarinpal.AspNetCore.Sample/appsettings.json)): 
 ```c#
 builder.Services.AddZarinpal(options =>
 {
@@ -181,6 +181,9 @@ var message = ZarinpalStatusCode.St100.GetStatusCodeMessage();
 ```
 ## Support
 For support, [click here](https://github.com/MehdiMst00#-you-can-reach-me-on).
+
+## Docs
+V4 Zarinpal Docs: [click here](https://www.zarinpal.com/docs/paymentGateway/).
 
 ## Give a star ⭐️ !!!
 If you liked the project, please give a star :)

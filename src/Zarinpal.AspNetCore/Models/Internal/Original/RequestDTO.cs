@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Zarinpal.AspNetCore.Models.Internal.Original;
+﻿namespace Zarinpal.AspNetCore.Models.Internal.Original;
 
 internal class RequestDTO
 {
@@ -21,6 +19,9 @@ internal class RequestDTO
 
     [JsonPropertyName("metadata")]
     public RequestMetadataDTO? Metadata { get; set; }
+
+    [JsonPropertyName("wages")]
+    public List<ZarinpalWages>? Wages { get; set; }
 }
 
 internal class RequestMetadataDTO
@@ -33,6 +34,9 @@ internal class RequestMetadataDTO
 
     [JsonPropertyName("order_id")]
     public string? OrderId { get; set; }
+
+    [JsonPropertyName("card_pan")]
+    public string? CardPan { get; set; }
 }
 
 internal class RequestResultData

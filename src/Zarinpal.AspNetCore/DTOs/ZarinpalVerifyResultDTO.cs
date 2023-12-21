@@ -27,8 +27,9 @@ public class ZarinpalVerifyResultData
 {
     public int Code { get; set; }
     public ulong RefId { get; set; }
-    public string CardPan { get; set; } = null!;
-    public string CardHash { get; set; } = null!;
-    public string FeeType { get; set; } = null!;
+    public string? CardPan { get; set; } = null;
+    public string? CardHash { get; set; } = null;
+    public string? FeeType { get; set; } = null;
     public int Fee { get; set; }
+    public List<ZarinpalWages>? Wages { get; set; } = null;
 }

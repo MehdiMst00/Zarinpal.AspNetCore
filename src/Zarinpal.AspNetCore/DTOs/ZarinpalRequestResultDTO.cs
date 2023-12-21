@@ -22,8 +22,8 @@ public class ZarinpalRequestResultDTO
 public class ZarinpalRequestData
 {
     public int Code { get; set; }
-    public string Message { get; set; } = null!;
-    public string Authority { get; set; } = null!;
-    public string FeeType { get; set; } = null!;
+    public string? Message { get; set; } = null;
+    public string? Authority { get; set; } = null;
+    public string? FeeType { get; set; } = null;
     public int Fee { get; set; }
 }
