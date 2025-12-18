@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
+using Zarinpal.AspNetCore.Consts;
 using Zarinpal.AspNetCore.DTOs;
 using Zarinpal.AspNetCore.Enums;
 using Zarinpal.AspNetCore.Extensions;
@@ -12,7 +13,7 @@ namespace Zarinpal.AspNetCore.Test;
 public class ZarinpalServiceTest
 {
     private readonly IZarinpalService _zarinpalService;
-    private readonly IAdvancedZarinpalService? _advancedZarinpalService;
+    private readonly IAdvancedZarinpalService _advancedZarinpalService;
 
     public ZarinpalServiceTest()
     {
@@ -21,11 +22,12 @@ public class ZarinpalServiceTest
             {
                 options.ZarinpalMode = ZarinpalMode.Sandbox;
                 options.MerchantId = "xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx";
+                options.Currency = ZarinpalCurrency.IRT;
             })
             .BuildServiceProvider();
 
         _zarinpalService = serviceProvider.GetRequiredService<IZarinpalService>();
-        _advancedZarinpalService = serviceProvider.GetService<IAdvancedZarinpalService>();
+        _advancedZarinpalService = serviceProvider.GetRequiredService<IAdvancedZarinpalService>();
     }
 
     [TestMethod]
@@ -60,12 +62,9 @@ public class ZarinpalServiceTest
     public async Task UnVerifiedAsyncTest()
     {
         // Act
-        var actual = new ZarinpalUnVerifyDTO(false);
-
-        if (_advancedZarinpalService != null)
-            actual = await _advancedZarinpalService.UnVerifiedAsync();
+        var actual = await _advancedZarinpalService.UnVerifiedAsync();
 
         // Assert
-        Assert.IsFalse(actual.IsSuccessStatusCode);
+        Assert.IsTrue(actual.IsSuccessStatusCode);
     }
 }
