@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Zarinpal.AspNetCore.DTOs;
+﻿namespace Zarinpal.AspNetCore.DTOs;
 
 public class ZarinpalUnVerifyDTO
 {
@@ -49,6 +47,6 @@ public class ZarinpalUnVerifyAuthority
     [JsonPropertyName("date")]
     public string? Date { get; set; }
 
-    [JsonIgnore] 
+    [JsonIgnore]
     public DateTime DateTime => DateTime.Parse(Date!);
 }

@@ -13,7 +13,7 @@ public class ZarinpalWages
 
     public ZarinpalWages() { }
 
-    public ZarinpalWages(string iban, 
+    public ZarinpalWages(string iban,
         int amount,
         string description)
     {

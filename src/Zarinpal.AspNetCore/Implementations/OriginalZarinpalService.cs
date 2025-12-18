@@ -2,7 +2,7 @@
 
 public class OriginalZarinpalService : IZarinpalService
 {
-    #region constructor
+    #region Ctor
 
     private readonly ILogger<OriginalZarinpalService> _logger;
     private readonly HttpClient _httpClient;
@@ -19,7 +19,7 @@ public class OriginalZarinpalService : IZarinpalService
 
     #endregion
 
-    #region zarinpal
+    #region Request
 
     public async Task<ZarinpalRequestResultDTO> RequestAsync(ZarinpalRequestDTO request)
     {
@@ -65,8 +65,9 @@ public class OriginalZarinpalService : IZarinpalService
                         var requestResult = data.Deserialize<RequestResultData>();
                         if (requestResult?.Code != null)
                         {
+                            var baseUrl = BaseUrlConst.GetBaseUrl(_zarinpalOptions.ZarinpalMode);
                             return new ZarinpalRequestResultDTO(requestResult.Code == 100,
-                                $"https://zarinpal.com/pg/StartPay/{requestResult.Authority}",
+                                $"{baseUrl}StartPay/{requestResult.Authority}",
                                 (ZarinpalStatusCode)requestResult.Code)
                             {
                                 Data = new ZarinpalRequestData
@@ -104,6 +105,10 @@ public class OriginalZarinpalService : IZarinpalService
             return new ZarinpalRequestResultDTO(false, string.Empty, ZarinpalStatusCode.St400);
         }
     }
+
+    #endregion
+
+    #region Verify
 
     public async Task<ZarinpalVerifyResultDTO> VerifyAsync(ZarinpalVerifyDTO verify)
     {
@@ -177,7 +182,7 @@ public class OriginalZarinpalService : IZarinpalService
 
     #endregion
 
-    #region dispose
+    #region Dispose
 
     public void Dispose()
     {

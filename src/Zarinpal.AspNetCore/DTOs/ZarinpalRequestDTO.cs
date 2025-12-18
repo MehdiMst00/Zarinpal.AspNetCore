@@ -21,7 +21,7 @@ public class ZarinpalRequestDTO
     public ZarinpalRequestDTO() { }
 
     public ZarinpalRequestDTO(int amount,
-        string description, 
+        string description,
         string verifyCallbackUrl,
         string? email = null,
         string? mobile = null,

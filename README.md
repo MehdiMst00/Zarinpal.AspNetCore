@@ -46,8 +46,7 @@ public class MyController : Controller
 
 ## Request Payment
 ```c#
-int toman = 5000;
-int rial = toman.TomanToRial(); // If store your price in toman you can use TomanToRial extension
+int rial = 50000;
 
 /*
  * Pay atttention: Currency is important, default is IRR (Rial)
@@ -88,8 +87,7 @@ public async Task<IActionResult> VerifyPayment()
     // Check 'Status' and 'Authority' query param so zarinpal sent for us
     if (HttpContext.IsValidZarinpalVerifyQueries())
     {
-        int toman = 5000;
-        int rial = toman.TomanToRial(); // If store your price in toman you can use TomanToRial extension
+        int rial = 50000;
 
         /*
          * Pay atttention: Currency is important, default is IRR (Rial)
@@ -132,23 +130,8 @@ public async Task<IActionResult> VerifyPayment()
 }
 ```
 
-## Pay attention
-- In sandbox don't need set MerchantId. (`Just a string of 36 characters`)
-- In sandbox use amount in `Toman`
-
 ## What is `IAdvancedZarinpalService`?
-- If you wanna use 'UnVerified' method, you must inject `IAdvancedZarinpalService` to service container. (Automatically not injected)
-- So let's come back into `Program.cs` and edit it (Or Set it in `appsettings.json` like [sample](https://github.com/MehdiMst00/Zarinpal.AspNetCore/blob/net8.0/samples/Zarinpal.AspNetCore.Sample/appsettings.json)): 
-```c#
-builder.Services.AddZarinpal(options =>
-{
-    options.MerchantId = "xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx";
-    options.ZarinpalMode = ZarinpalMode.Original;
-    options.Currency = ZarinpalCurrency.IRT;
-    options.UseAdvanced = true;
-});
-```
-- Now we can use `IAdvancedZarinpalService`:
+- You can use `IAdvancedZarinpalService` If you wanna see 'UnVerified' method:
 ```c#
 private readonly IAdvancedZarinpalService _advancedZarinpalService;
 
@@ -171,10 +154,6 @@ bool isValidZarinpalVerifyQueries = HttpContext.IsValidZarinpalVerifyQueries();
 
 // Get authority from query params
 string authority = HttpContext.GetZarinpalAuthorityQuery();
-
-// Convert toman to rial
-int toman = 500;
-int rial = toman.TomanToRial();
 
 // Get status message
 var message = ZarinpalStatusCode.St100.GetStatusCodeMessage();

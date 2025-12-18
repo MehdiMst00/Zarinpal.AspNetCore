@@ -1,22 +1,27 @@
-﻿namespace Zarinpal.AspNetCore.Utilities;
+﻿using Polly.Retry;
+
+namespace Zarinpal.AspNetCore.Utilities;
 
 internal static class ZarinpalUtilities
 {
-    private static readonly List<HttpStatusCode> invalidStatusCode = new()
-    {
-        HttpStatusCode.BadGateway,
-        HttpStatusCode.InternalServerError,
-        HttpStatusCode.BadRequest,
+    private static readonly HttpStatusCode[] InvalidStatusCodes =
+    [
         HttpStatusCode.RequestTimeout,
-        HttpStatusCode.Forbidden,
+        HttpStatusCode.InternalServerError,
+        HttpStatusCode.BadGateway,
+        HttpStatusCode.ServiceUnavailable,
         HttpStatusCode.GatewayTimeout
-    };
+    ];
 
-    internal static IAsyncPolicy<HttpResponseMessage> RetryPolicy()
+    internal static AsyncRetryPolicy<HttpResponseMessage> RetryPolicy()
     {
-        return HttpPolicyExtensions
-            .HandleTransientHttpError()
-            .OrResult(msg => invalidStatusCode.Contains(msg.StatusCode))
-            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+        return Policy<HttpResponseMessage>
+            .Handle<HttpRequestException>()
+            .OrResult(response => InvalidStatusCodes.Contains(response.StatusCode))
+            .WaitAndRetryAsync(
+                retryCount: 3,
+                sleepDurationProvider: retryAttempt =>
+                    TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+            );
     }
 }

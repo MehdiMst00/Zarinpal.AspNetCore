@@ -2,9 +2,6 @@
 
 public static class ZarinpalExtension
 {
-    private static readonly string baseUrl = "https://api.zarinpal.com/pg/";
-    private static readonly string sandboxUrl = "https://sandbox.zarinpal.com/pg/";
-
     public static IServiceCollection AddZarinpal(this IServiceCollection services, Action<ZarinpalOptions> options)
     {
         services.Configure(options);
@@ -17,28 +14,23 @@ public static class ZarinpalExtension
             throw new Exception("لطفا كد 36 كاراكتري اختصاصي پذيرنده را به درستی وارد کنید !!!");
         }
 
-        if (option.ZarinpalMode == ZarinpalMode.Sandbox) // Sandbox
-        {
-            services.AddHttpClient<IZarinpalService, SandboxZarinpalService>((client) =>
-            {
-                client.BaseAddress = new Uri(sandboxUrl);
-            }).AddPolicyHandler(ZarinpalUtilities.RetryPolicy());
-        }
-        else // Original
-        {
-            services.AddHttpClient<IZarinpalService, OriginalZarinpalService>((client) =>
-            {
-                client.BaseAddress = new Uri(baseUrl);
-            }).AddPolicyHandler(ZarinpalUtilities.RetryPolicy());
-        }
+        var baseUrl = BaseUrlConst.GetBaseUrl(option.ZarinpalMode);
 
-        if (option.UseAdvanced)
+        services.AddSingleton<IAsyncPolicy<HttpResponseMessage>>(
+            ZarinpalUtilities.RetryPolicy()
+        );
+
+        services.AddTransient<PollyRetryHandler>();
+
+        services.AddHttpClient<IZarinpalService, OriginalZarinpalService>((client) =>
         {
-            services.AddHttpClient<IAdvancedZarinpalService, AdvancedZarinpalService>(client =>
-            {
-                client.BaseAddress = new Uri(baseUrl);
-            }).AddPolicyHandler(ZarinpalUtilities.RetryPolicy());
-        }
+            client.BaseAddress = new Uri(baseUrl);
+        }).AddHttpMessageHandler<PollyRetryHandler>();
+
+        services.AddHttpClient<IAdvancedZarinpalService, AdvancedZarinpalService>(client =>
+        {
+            client.BaseAddress = new Uri(baseUrl);
+        }).AddHttpMessageHandler<PollyRetryHandler>();
 
         return services;
     }
@@ -46,17 +38,12 @@ public static class ZarinpalExtension
     public static bool IsValidZarinpalVerifyQueries(this HttpContext httpContext)
     {
         return httpContext.Request.Query["Status"] != "" &&
-               httpContext.Request.Query["Status"].ToString().ToLower() == "ok"
-               && httpContext.Request.Query["Authority"] != "";
+               httpContext.Request.Query["Status"].ToString().Equals("ok", StringComparison.CurrentCultureIgnoreCase) &&
+               httpContext.Request.Query["Authority"] != "";
     }
 
     public static string? GetZarinpalAuthorityQuery(this HttpContext httpContext)
     {
         return httpContext.Request.Query["Authority"];
-    }
-
-    public static int TomanToRial(this int toman)
-    {
-        return Convert.ToInt32(toman.ToString() + "0");
     }
 }

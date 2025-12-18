@@ -2,7 +2,6 @@
 using Zarinpal.AspNetCore.DTOs;
 using Zarinpal.AspNetCore.Extensions;
 using Zarinpal.AspNetCore.Interfaces;
-using Zarinpal.AspNetCore.Models;
 
 namespace Zarinpal.AspNetCore.Sample.Controllers;
 
@@ -26,8 +25,7 @@ public class HomeController : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> RequestPayment()
     {
-        int toman = 5000;
-        int rial = toman.TomanToRial(); // If store your price in toman you can use TomanToRial extension
+        int rial = 50000;
 
         /*
          * Pay atttention: Currency is important, default is IRR (Rial)
@@ -40,7 +38,7 @@ public class HomeController : Controller
         }
          */
 
-        var request = new ZarinpalRequestDTO(toman, "خرید",
+        var request = new ZarinpalRequestDTO(rial, "خرید",
             "https://localhost:7219/Home/VerifyPayment",
             email: "test@test.com",
             mobile: "09123456789",
@@ -77,8 +75,7 @@ public class HomeController : Controller
         // Check 'Status' and 'Authority' query param so zarinpal sent for us
         if (HttpContext.IsValidZarinpalVerifyQueries())
         {
-            int toman = 5000;
-            int rial = toman.TomanToRial(); // If store your price in toman you can use TomanToRial extension
+            int rial = 50000;
 
             /*
              * Pay atttention: Currency is important, default is IRR (Rial)
@@ -91,7 +88,7 @@ public class HomeController : Controller
             }
              */
 
-            var verify = new ZarinpalVerifyDTO(toman,
+            var verify = new ZarinpalVerifyDTO(rial,
                 HttpContext.GetZarinpalAuthorityQuery()!);
 
             var response = await _zarinpalService.VerifyAsync(verify);
@@ -111,14 +108,10 @@ public class HomeController : Controller
             {
                 // Do Somethings...
                 ViewData["RefId"] = response.RefId;
-            }
 
-            //if (response.StatusCode == ZarinpalStatusCode.St100)
-            //{
-            //    // if you want see status message
-            //    var message = response.StatusCode.Value.GetStatusCodeMessage();
-            //    // Do Something
-            //}
+                // if you want see status message
+                // var message = response.StatusCode?.GetStatusCodeMessage();
+            }
 
             return View(response.IsSuccessStatusCode);
         }

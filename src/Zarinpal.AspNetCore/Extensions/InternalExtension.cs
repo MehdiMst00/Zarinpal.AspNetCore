@@ -12,8 +12,8 @@ internal static class InternalExtension
         return request.Amount > 0 &&
                 !string.IsNullOrEmpty(request.Description) &&
                 !string.IsNullOrEmpty(request.VerifyCallbackUrl) &&
-                (request.VerifyCallbackUrl.ToLower().StartsWith("http://") ||
-                request.VerifyCallbackUrl.ToLower().StartsWith("https://"));
+                (request.VerifyCallbackUrl.StartsWith("http://", StringComparison.CurrentCultureIgnoreCase) ||
+                request.VerifyCallbackUrl.StartsWith("https://", StringComparison.CurrentCultureIgnoreCase));
     }
 
     internal static bool IsValidZarinpalVerify(ZarinpalVerifyDTO verify)

@@ -2,7 +2,7 @@
 
 public class AdvancedZarinpalService : IAdvancedZarinpalService
 {
-    #region constrcutor
+    #region Ctor
 
     private readonly HttpClient _httpClient;
     private readonly ZarinpalOptions _options;
@@ -15,14 +15,10 @@ public class AdvancedZarinpalService : IAdvancedZarinpalService
 
     #endregion
 
-    #region un verified
+    #region UnVerified
 
     public async Task<ZarinpalUnVerifyDTO> UnVerifiedAsync()
     {
-        // Here we on sandbox mode :)
-        if (_options.ZarinpalMode != ZarinpalMode.Original)
-            return new ZarinpalUnVerifyDTO(false, ZarinpalStatusCode.St400, null);
-
         // Original api
         var response = await _httpClient.PostAsJsonAsync("v4/payment/unVerified.json", new
         {
@@ -39,7 +35,7 @@ public class AdvancedZarinpalService : IAdvancedZarinpalService
                 var data = jsonObjectResponse["data"] as JsonObject;
                 if (data?.Count > 0)
                 {
-                    var code = Convert.ToInt32(data["code"]?.GetValue<string>() ?? "400");
+                    var code = data["code"]?.GetValue<int?>() ?? 400;
 
                     var authorities =
                         data["authorities"]?.AsArray().Deserialize<List<ZarinpalUnVerifyAuthority>>();
@@ -66,7 +62,7 @@ public class AdvancedZarinpalService : IAdvancedZarinpalService
 
     #endregion
 
-    #region dispose
+    #region Dispose
 
     public void Dispose()
     {
